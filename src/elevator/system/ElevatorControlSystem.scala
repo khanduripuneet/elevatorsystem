@@ -12,7 +12,7 @@ class ElevatorControlSystem(servicePlan: Map[Int, (Int, Int)]) {
       e._2.highestFloor > pickUpFloor && e._2.lowestFloor < pickUpFloor
         || e._2.highestFloor == pickUpFloor && !up
         || e._2.lowestFloor == pickUpFloor && up)
-    elevators(findBestElevatorForPickUp(pickUpFloor, up)).addStop(pickUpFloor)
+    elevators(findBestElevatorForPickUp(applicableElevators,pickUpFloor, up)).addStop(pickUpFloor)
   }
 
   def addStop(elevatorId: Int, stopFloor: Int) {
@@ -23,8 +23,8 @@ class ElevatorControlSystem(servicePlan: Map[Int, (Int, Int)]) {
     elevators(elevatorId).update(currentFloor, queuedStops)
   }
 
-  def findBestElevatorForPickUp(pickUpFloor: Int, up: Boolean): Int = {
-    val pickUpScores: Map[Int, Int] = elevators.map(elevator =>
+  def findBestElevatorForPickUp(applicableElevators: Map[Int, Elevator], pickUpFloor: Int, up: Boolean): Int = {
+    val pickUpScores: Map[Int, Int] = applicableElevators.map(elevator =>
       elevator._1 -> elevator._2.pickUpScore(pickUpFloor, up))
     pickUpScores.toList.sortBy(_._2).head._1
   }
